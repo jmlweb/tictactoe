@@ -4,7 +4,11 @@ import { useBoard } from './board';
 import { PLAYER_ONE, PLAYER_TWO, usePlayers } from './players';
 import * as UI from './ui';
 
-const Game = () => {
+interface Props {
+  isAutomatic: boolean;
+}
+
+const Game = ({ isAutomatic }: Props) => {
   const [score, setScore] = React.useState({
     [PLAYER_ONE]: 0,
     [PLAYER_TWO]: 0,
@@ -19,6 +23,18 @@ const Game = () => {
     makeHumanMove,
     resetBoard,
   } = useBoard();
+
+  React.useEffect(() => {
+    if (!isGameFinished && isAutomatic && players.current === PLAYER_TWO) {
+      const timeout = setTimeout(() => {
+        makeRandomMove(PLAYER_TWO);
+        players.switch();
+      }, 500);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [isAutomatic, players, makeRandomMove, isGameFinished]);
   return (
     <>
       {isGameFinished ? (
@@ -60,7 +76,10 @@ const Game = () => {
             value={value}
             nextValue={players.current}
             onClick={() => {
-              if (!isGameFinished) {
+              if (
+                !isGameFinished &&
+                (!isAutomatic || players.current === PLAYER_ONE)
+              ) {
                 makeHumanMove(players.current, index);
                 players.switch();
               }

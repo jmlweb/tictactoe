@@ -8,7 +8,7 @@ function App() {
         images={['bluey', 'little-einsteins', 'marcus-level']}
       />
       <Layout.Content>
-        <Game />
+        <Game isAutomatic />
       </Layout.Content>
     </Layout.Root>
   );
