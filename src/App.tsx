@@ -1,17 +1,17 @@
-import Game from './Game';
-import * as Layout from './Layout';
+import AppBackground from './AppBackground';
+import AppRouter from './AppRouter';
+import { BackgroundProvider } from './logic/background';
+import { OptionsProvider } from './logic/options';
 
-function App() {
-  return (
-    <Layout.Root>
-      <Layout.Background
-        images={['bluey', 'little-einsteins', 'marcus-level']}
-      />
-      <Layout.Content>
-        <Game isAutomatic />
-      </Layout.Content>
-    </Layout.Root>
-  );
-}
+const App = () => (
+  <BackgroundProvider>
+    <>
+      <AppBackground />
+      <OptionsProvider>
+        <AppRouter />
+      </OptionsProvider>
+    </>
+  </BackgroundProvider>
+);
 
 export default App;
