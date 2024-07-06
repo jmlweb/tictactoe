@@ -18,8 +18,18 @@ const OptionsProvider = ({ children }: Props) => {
 
   const updateOptions = React.useCallback<OptionsDispatchers['updateOptions']>(
     (newOptions) => {
-      setOptions(newOptions);
-      storageService.set(newOptions);
+      setOptions((prevOptions) => {
+        if (
+          !prevOptions ||
+          prevOptions.difficulty !== newOptions.difficulty ||
+          prevOptions.isVsCPU !== newOptions.isVsCPU ||
+          prevOptions.playerNames.join(',') !== newOptions.playerNames.join(',')
+        ) {
+          storageService.set(newOptions);
+          return newOptions;
+        }
+        return prevOptions;
+      });
     },
     [],
   );
@@ -30,12 +40,20 @@ const OptionsProvider = ({ children }: Props) => {
         if (!prevOptions) {
           throw new Error('Options not initialized');
         }
-        const newOptions = {
-          ...prevOptions,
-          [key]: value,
-        };
-        storageService.set(newOptions);
-        return newOptions;
+        if (
+          (key !== 'playerNames' && prevOptions[key] !== value) ||
+          (key === 'playerNames' &&
+            Array.isArray(value) &&
+            prevOptions.playerNames.join(',') !== value.join(','))
+        ) {
+          const newOptions = {
+            ...prevOptions,
+            [key]: value,
+          };
+          storageService.set(newOptions);
+          return newOptions;
+        }
+        return prevOptions;
       });
     },
     [],

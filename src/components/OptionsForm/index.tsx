@@ -26,10 +26,13 @@ const OptionsForm = ({
   const [playerNames, setPlayerNames] = React.useState(initialPlayerNames);
   const [isVsCPU, setIsVsCPU] = React.useState(initialIsVsCPU);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    onSubmit({ difficulty, playerNames, isVsCPU });
-  };
+  const handleSubmit = React.useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      onSubmit({ difficulty, playerNames, isVsCPU });
+    },
+    [difficulty, playerNames, isVsCPU, onSubmit],
+  );
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">

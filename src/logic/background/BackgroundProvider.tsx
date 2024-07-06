@@ -14,9 +14,9 @@ const formatImage = (image: string) => `/backgrounds/${image}.avif`;
 const getRandomImage = () =>
   formatImage(getRandomItem(Object.keys(BACKGROUNDS)));
 
-const BackgroundProvider: React.FC<Props> = ({ children }) => {
+const BackgroundProvider = React.memo(({ children }: Props) => {
   const [background, internalSetBackground] =
-    React.useState<string>(getRandomImage());
+    React.useState<string>(getRandomImage);
 
   const setBackground = React.useCallback((image: string) => {
     internalSetBackground(formatImage(image));
@@ -38,6 +38,8 @@ const BackgroundProvider: React.FC<Props> = ({ children }) => {
       </BackgroundContext.Provider>
     </BackgroundDispatchersContext.Provider>
   );
-};
+});
+
+BackgroundProvider.displayName = 'BackgroundProvider';
 
 export default BackgroundProvider;
